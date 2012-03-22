@@ -1,0 +1,34 @@
+=====================
+/makercore
+
+Python module that uses OCE internally to provide
+
+Geometry:
+	Body
+	(Surface)
+	Curve3d
+	Shape2d
+	(Curve2d)
+
+
+PolygonMesh:
+	TriangleMesh
+
+Classes are internally named with leading _ in c++ and
+wrapped with Boost.Python.
+
+Dependencies:
+	OCE
+	Boost.Python
+
+
+======================
+/makercad
+
+Python application
+
+Dependencies
+	Qt4
+	PySide
+	PyOpenGL
+	makercore
