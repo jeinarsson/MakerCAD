@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "makercore", "makercore\makercore.vcxproj", "{DC045BA3-8145-4CD2-B768-1412A8550A4D}"
 EndProject
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "makercad", "makercad\makercad.pyproj", "{7DAB2627-5FA8-4457-8249-D41C1A6CBE68}"
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "makercad", "..\..\makercad\makercad.pyproj", "{311D8FF7-0D87-41EF-B9F9-E53BCF572461}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,12 +25,12 @@ Global
 		{DC045BA3-8145-4CD2-B768-1412A8550A4D}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{DC045BA3-8145-4CD2-B768-1412A8550A4D}.Release|Win32.ActiveCfg = Release|Win32
 		{DC045BA3-8145-4CD2-B768-1412A8550A4D}.Release|Win32.Build.0 = Release|Win32
-		{7DAB2627-5FA8-4457-8249-D41C1A6CBE68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7DAB2627-5FA8-4457-8249-D41C1A6CBE68}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{7DAB2627-5FA8-4457-8249-D41C1A6CBE68}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{7DAB2627-5FA8-4457-8249-D41C1A6CBE68}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7DAB2627-5FA8-4457-8249-D41C1A6CBE68}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{7DAB2627-5FA8-4457-8249-D41C1A6CBE68}.Release|Win32.ActiveCfg = Release|Any CPU
+		{311D8FF7-0D87-41EF-B9F9-E53BCF572461}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{311D8FF7-0D87-41EF-B9F9-E53BCF572461}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{311D8FF7-0D87-41EF-B9F9-E53BCF572461}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{311D8FF7-0D87-41EF-B9F9-E53BCF572461}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{311D8FF7-0D87-41EF-B9F9-E53BCF572461}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{311D8FF7-0D87-41EF-B9F9-E53BCF572461}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -3,14 +3,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{7dab2627-5fa8-4457-8249-d41c1a6cbe68}</ProjectGuid>
+    <ProjectGuid>{311d8ff7-0d87-41ef-b9f9-e53bcf572461}</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>
-    </StartupFile>
+    <StartupFile>makercad.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
-    <AssemblyName>makercad</AssemblyName>
+    <OutputPath>.</OutputPath>
     <Name>makercad</Name>
     <RootNamespace>makercad</RootNamespace>
   </PropertyGroup>
@@ -22,4 +21,8 @@
     <DebugSymbols>true</DebugSymbols>
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="makercad.py" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
 </Project>
