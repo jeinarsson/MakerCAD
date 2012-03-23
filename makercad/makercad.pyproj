@@ -23,6 +23,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="makercad.py" />
+    <Compile Include="makercore\__init__.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="makercore\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
 </Project>

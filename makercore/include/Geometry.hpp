@@ -6,10 +6,12 @@
 class _Geometry
 {
 public:
-	_Geometry(){};
 	virtual ~_Geometry(){};
+	TopoDS_Shape& get_shape_reference() { return shape; };
+	TopoDS_Shape get_shape_copy() { return shape; };
 
 protected:
+	_Geometry(TopoDS_Shape _shape){ shape = _shape; };
 	TopoDS_Shape shape;
 };
 

@@ -7,6 +7,9 @@
     <ClCompile Include="..\..\..\makercore\source\ModuleExport.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\makercore\source\Body.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -23,6 +26,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\makercore\include\OCE.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\makercore\include\Body.hpp">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
