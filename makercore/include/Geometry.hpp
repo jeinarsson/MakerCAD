@@ -3,15 +3,15 @@
 
 #include "OCE.hpp"
 
-class _Geometry
+class Geometry
 {
 public:
-	virtual ~_Geometry(){};
+	virtual ~Geometry(){};
 	TopoDS_Shape& get_shape_reference() { return shape; };
 	TopoDS_Shape get_shape_copy() { return shape; };
 
 protected:
-	_Geometry(TopoDS_Shape _shape){ shape = _shape; };
+	Geometry(TopoDS_Shape _shape){ shape = _shape; };
 	TopoDS_Shape shape;
 };
 

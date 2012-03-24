@@ -49,6 +49,7 @@
     <LibraryPath>../../../external/python272/libs/;../../../external/boost_1_47/lib/;../../../external/oce-0.9.1/win32/lib;$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib</LibraryPath>
     <IncludePath>../../../makercore/include/;../../../external/python272/include/;../../../external/boost_1_47/;../../../external/oce-0.9.1/include/oce/;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;</IncludePath>
     <TargetExt>.pyd</TargetExt>
+    <TargetName>_$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

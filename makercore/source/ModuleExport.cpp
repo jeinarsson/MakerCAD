@@ -1,6 +1,8 @@
 #include <iostream>
 #include <boost/python.hpp>
 
+
+
 #include "Body.hpp"
 
 using namespace boost::python;
@@ -14,9 +16,10 @@ BOOST_PYTHON_MODULE(_makercore)
 {
    def("hello_from_c",&hello_from_c);
 
-   class_<_Geometry>("Geometry", no_init);
+   class_<Geometry>("Geometry", no_init);
 
-   class_<_Body, bases<_Geometry>>("_Body", no_init)
-        .def("MakeBlock", &_Body::MakeBlock).staticmethod("MakeBlock")
-        .def("DoUnion", &_Body::DoUnion).staticmethod("DoUnion");
+   class_<Body, bases<Geometry>>("Body", no_init)
+        .def("MakeBlock", &Body::MakeBlock).staticmethod("MakeBlock")
+        .def("DoUnion", &Body::DoUnion).staticmethod("DoUnion");
+
 }

@@ -4,17 +4,18 @@
 #include "Geometry.hpp"
 #include "OCE.hpp"
 
-class _Body : public _Geometry
+class Body : public Geometry
 {
 public:
-	virtual ~_Body() {};
+	virtual ~Body() {};
 
-	static _Body MakeBlock(double a, double b, double c);
+	static Body MakeBlock(double a, double b, double c);
 	
-	static _Body DoUnion(_Body& body1, _Body& body2);
+	static Body DoUnion(Body& body1, Body& body2);
+
 
 protected:
-	_Body(TopoDS_Shape _shape) : _Geometry(_shape) {};
+	Body(TopoDS_Shape _shape) : Geometry(_shape) {};
 };
 
 #endif
