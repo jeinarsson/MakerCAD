@@ -14,6 +14,8 @@ public:
 	static Body DoUnion(Body& body1, Body& body2);
 
 
+	
+
 protected:
 	Body(TopoDS_Shape _shape) : Geometry(_shape) {};
 };

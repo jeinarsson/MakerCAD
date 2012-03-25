@@ -11,11 +11,9 @@ Geometry:
 	(Curve2d)
 
 
-PolygonMesh:
-	TriangleMesh
+TriangleMesh
 
-Classes are internally named with leading _ in c++ and
-wrapped with Boost.Python.
+Classes are wrapped with Boost.Python into module "_makercore", then extended (not inherited) in the python module called makercore.
 
 Dependencies:
 	OCE

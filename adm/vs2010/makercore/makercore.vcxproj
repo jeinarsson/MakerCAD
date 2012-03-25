@@ -87,11 +87,13 @@
     <ClInclude Include="..\..\..\makercore\include\Body.hpp" />
     <ClInclude Include="..\..\..\makercore\include\Geometry.hpp" />
     <ClInclude Include="..\..\..\makercore\include\OCE.hpp" />
+    <ClInclude Include="..\..\..\makercore\include\TriangleMesh.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\makercore\source\Body.cpp" />
     <ClCompile Include="..\..\..\makercore\source\Geometry.cpp" />
     <ClCompile Include="..\..\..\makercore\source\ModuleExport.cpp" />
+    <ClCompile Include="..\..\..\makercore\source\TriangleMesh.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
