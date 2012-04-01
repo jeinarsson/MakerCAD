@@ -1,6 +1,0 @@
-*.*
-!.gitignore
-!*.sln
-!*.pyproj
-!*.vcxproj
-!*.vcxproj.filters
