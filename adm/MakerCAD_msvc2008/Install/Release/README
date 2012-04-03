@@ -1,0 +1,6 @@
+Put release dlls here
+
+Python27.dll
+Qt*.dll
+PythonQt.dll
+PythonQt_QtAll.dll
