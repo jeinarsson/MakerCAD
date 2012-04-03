@@ -4,7 +4,6 @@
 #include "PythonQt_QtAll.h"
 #include "gui/PythonQtScriptingConsole.h"
 
-#include "Body.h"
 
 int main(int argc, char *argv[])
 {
@@ -15,18 +14,17 @@ int main(int argc, char *argv[])
 	PythonQt::init(PythonQt::IgnoreSiteModule | PythonQt::RedirectStdOut);
 	PythonQt_QtAll::init();
 
-	PythonQtObjectPtr  mainContext = PythonQt::self()->getMainModule();
-	PythonQtScriptingConsole console(NULL, mainContext);
+	PythonQt::self()->installDefaultImporter();
+	PythonQt::self()->addSysPath(QString("script/"));
 
-	QSharedPointer<Body> some_block = QSharedPointer<Body>(new Block(1.,2.,3.));
-	QSharedPointer<Body> another_block = QSharedPointer<Body>(new Block(-1.,2.,1.));
-	QSharedPointer<Body> the_union = QSharedPointer<Body>(new Union(some_block.data(), another_block.data()));
+	PythonQtObjectPtr __main__ = PythonQt::self()->getMainModule();
+	PythonQtScriptingConsole console(NULL, __main__);
 
-	the_union->Instantiate();
-
-	mainContext.evalFile("main.py");
-
+	// console shown in mainwindow instead
 	console.show();
+
+	__main__.addObject("console", &console);
+	__main__.evalFile(QString("script/main.py"));
 
 	return a.exec();
 }

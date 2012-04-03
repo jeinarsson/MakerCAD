@@ -1,15 +1,9 @@
-from PythonQt.QtGui import *
+from PythonQt import QtCore, QtGui
+from makercad import MainWindow
 
-group = QGroupBox()
-box = QVBoxLayout(group)
-push1 =  QPushButton(group)
-box.addWidget(push1)
-push2 =  QPushButton(group)
-box.addWidget(push2)
-check =  QCheckBox(group)
-check.text = 'check me'
-group.title = 'my title'
-push1.text = 'press me'
-push2.text = 'press me2'
-box.addWidget(check)
-group.show()
+QtCore.QCoreApplication.setApplicationName("MakerCAD")
+QtCore.QCoreApplication.setOrganizationName("MakerCAD")
+
+# console is automatically exported from C++ program
+main_window = MainWindow(console)
+main_window.show()
