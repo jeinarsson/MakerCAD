@@ -1,0 +1,6 @@
+*.*
+!.gitignore
+!*.bat
+!README
+!*.sln
+!*.vcproj

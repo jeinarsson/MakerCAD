@@ -1,4 +1,4 @@
-from PythonQt import QtCore, QtGui
+from PythonQt import QtCore, QtGui, makercore
 from documentview import DocumentView
 
 
@@ -19,8 +19,18 @@ class MainWindow(QtGui.QMainWindow):
         self.documents = QtGui.QTabWidget()
         self.setCentralWidget(self.documents)
 
+        self.work_manager = makercore.WorkManager(2)
+        self.work_manager.connect('log(QString)', self.log_append)
+        self.work_manager.connect('work_finished(int,Geometry*)', self.on_work_finished)
         
-        
+    
+
+    def on_work_finished(self, n, p):
+        self.log.appendPlainText("Got work back(n,p): " + str(n) + ", " + str(p))
+
+    def log_append(self, s):
+        self.log.appendPlainText(s)
+
     def initialise_windows(self):
 
     	dock = QtGui.QDockWidget("Python console", self)
@@ -33,6 +43,12 @@ class MainWindow(QtGui.QMainWindow):
         dock.setWidget(self.tools)
         dock.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea | QtCore.Qt.RightDockWidgetArea)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dock)
+        
+        dock = QtGui.QDockWidget("Log", self)
+        self.log = QtGui.QPlainTextEdit(dock)
+        dock.setWidget(self.log)
+        #dock.setAllowedAreas(QtCore.Qt.LeftDockWidgetArea | QtCore.Qt.RightDockWidgetArea)
+        self.addDockWidget(QtCore.Qt.TopDockWidgetArea, dock)
 
     def create_actions(self):
         self.new_document_action = QtGui.QAction("&New Letter", self)
@@ -54,12 +70,17 @@ class MainWindow(QtGui.QMainWindow):
         layout.addWidget(group_operations)
         
         prim_layout = QtGui.QVBoxLayout(group_primitives)
-        button = QtGui.QPushButton("New document", group_primitives)
-        button.connect('clicked()', self.new_document_action, 'trigger()')
+        button = QtGui.QPushButton("Create work", group_primitives)
+        button.connect('clicked()', self.create_work)
         prim_layout.addWidget(button)
 
         return ret
 
+
+    def create_work(self):
+        print "create_work"
+        self.work_manager.queue_work(70000, None)
+        
 
     def set_statusbar_message(self, message):
         self.statusBar().showMessage(message) 
@@ -78,4 +99,4 @@ class MainWindow(QtGui.QMainWindow):
         settings.setValue("MainWindow.size", self.size) 
 
     def closeEvent(self, event):
-		self.write_settings()
+        self.write_settings()
