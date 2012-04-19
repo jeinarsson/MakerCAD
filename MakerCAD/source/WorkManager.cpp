@@ -1,5 +1,6 @@
 #include "WorkManager.h"
 
+#include <QtAlgorithms>
 
 Worker::Worker()
 {
@@ -17,7 +18,7 @@ Worker::~Worker()
 
 void Worker::work(GeometryWork work)
 {
-
+/* // Dummy work
 	double x=0.6;
 	for (int i=0; i<10000; i++){
 		for (int j=0; j<work.reference_id; j++){
@@ -25,6 +26,8 @@ void Worker::work(GeometryWork work)
 		}
 	}
 	work.reference_id = (int)x;
+*/
+	work.geometry->Instantiate();
 
 	emit work_finished(work);
 }
@@ -49,12 +52,16 @@ void WorkManager::init(int n)
 
 WorkManager::~WorkManager()
 {
+	qDeleteAll(free_workers);
+	qDeleteAll(busy_workers);
+/*
 	while(!free_workers.empty()) {
 		delete free_workers.takeFirst();
 	}
 	while(!busy_workers.empty()) {
 		delete busy_workers.takeFirst();
 	}
+*/
 }
 
 
@@ -67,10 +74,10 @@ inline void WorkManager::invoke_worker(Worker *worker, GeometryWork work)
 }
 
 
-void WorkManager::queue_work(int reference_id, Geometry *geometry)
+void WorkManager::submit_work(WorkManagerClient* client, int reference_id, Geometry *geometry)
 {
 	
-	GeometryWork new_work(reference_id, geometry);
+	GeometryWork new_work(client, reference_id, geometry);
 
 	if (free_workers.empty())
 	{
@@ -87,19 +94,39 @@ void WorkManager::queue_work(int reference_id, Geometry *geometry)
 }
 
 void WorkManager::handle_finished_work(GeometryWork work)
+{
+	work.client->emit_work_finished(work.reference_id, work.geometry);
+
+	Worker* w = (Worker*)QObject::sender();
+	if (!work_queue.empty())
 	{
-		emit log(QString("Work finished"));
-		emit work_finished(work.reference_id, work.geometry);
-		
-		Worker* w = (Worker*)QObject::sender();
-		if (!work_queue.empty())
-		{
-			GeometryWork new_work = work_queue.takeFirst();
-			invoke_worker(w, new_work);
-		}
-		else
-		{
-			busy_workers.removeOne(w);
-			free_workers.append(w);
-		}
+		GeometryWork new_work = work_queue.takeFirst();
+		invoke_worker(w, new_work);
 	}
+	else
+	{
+		busy_workers.removeOne(w);
+		free_workers.append(w);
+	}
+
+
+}
+
+WorkManagerClient* WorkManager::register_client()
+{
+	WorkManagerClient* new_client = new WorkManagerClient();
+	new_client->parent = this;
+	registered_clients.append(new_client);
+	return new_client;
+}
+
+void WorkManager::deregister_client(WorkManagerClient* wmc)
+{
+	registered_clients.removeOne(wmc);
+	delete wmc;
+}
+
+void WorkManagerClient::submit_work(int reference_id, Geometry* geometry)
+{
+	parent->submit_work(this, reference_id, geometry);
+}

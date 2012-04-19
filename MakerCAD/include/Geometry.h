@@ -22,6 +22,8 @@ public:
 	};
 
 	virtual void Instantiate() { is_instantiated = true; };
+	
+	bool instantiated() { return is_instantiated; }
 
 protected:
 	bool is_instantiated;

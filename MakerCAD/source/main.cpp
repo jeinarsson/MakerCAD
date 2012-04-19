@@ -6,6 +6,7 @@
 
 #include "WorkManager.h"
 
+#include "GeometryDecorators.h"
 #include "BodyDecorators.h"
 
 int main(int argc, char *argv[])
@@ -13,18 +14,23 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	
 	qRegisterMetaType<GeometryWork>("GeometryWork");
+	qRegisterMetaType<Geometry*>("Geometry*");
+	qRegisterMetaType<WorkManagerClient*>("WorkManagerClient*");
 
 	PythonQt::init(PythonQt::IgnoreSiteModule | PythonQt::RedirectStdOut);
 	PythonQt_QtAll::init();
-
+	
 	PythonQt::self()->installDefaultImporter();
 	PythonQt::self()->addSysPath(QString("script/"));
 
 	PythonQt::self()->addDecorators(new WorkManagerDecorators());
 	PythonQt::self()->registerClass(&WorkManager::staticMetaObject, "makercore");
+	PythonQt::self()->registerClass(&WorkManagerClient::staticMetaObject, "makercore");
+
+	PythonQt::self()->addDecorators(new GeometryDecorators());
+	PythonQt::self()->registerCPPClass("Geometry","", "makercore");
 
 	PythonQt::self()->addDecorators(new BodyDecorators());
-	PythonQt::self()->registerCPPClass("Geometry","", "makercore");
 	PythonQt::self()->registerCPPClass("Body","Geometry", "makercore");
 	PythonQt::self()->registerCPPClass("Block","Body", "makercore");
 	PythonQt::self()->registerCPPClass("Union","Body", "makercore");

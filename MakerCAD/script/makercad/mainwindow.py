@@ -21,12 +21,22 @@ class MainWindow(QtGui.QMainWindow):
 
         self.work_manager = makercore.WorkManager(2)
         self.work_manager.connect('log(QString)', self.log_append)
-        self.work_manager.connect('work_finished(int,Geometry*)', self.on_work_finished)
         
-    
+        self.wmc = self.work_manager.register_client()
+        self.wmc.connect('work_finished(int,Geometry*)', self.on_work_finished)
+        
+    def try_workers(self):
+
+        b1 = makercore.Block(1,2,3)
+        b2 = makercore.Block(3,4,3)
+        b3 = makercore.Union(b1,b2)
+
+        self.log.appendPlainText("b3.instantiated: " + str(b3.instantiated()))
+        self.wmc.submit_work(7, b3)
 
     def on_work_finished(self, n, p):
         self.log.appendPlainText("Got work back(n,p): " + str(n) + ", " + str(p))
+        self.log.appendPlainText("p.instantiated: " + str(p.instantiated()))
 
     def log_append(self, s):
         self.log.appendPlainText(s)
