@@ -1,6 +1,0 @@
-Put debug dlls here
-
-Python27_d.dll
-Qt*d.dll
-PythonQt.dll (debug, although same name)
-PythonQt_QtAll_d.dll
