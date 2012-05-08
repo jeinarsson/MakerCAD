@@ -1,0 +1,12 @@
+{application, geometry_workers,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { geometry_workers_app, []}},
+  {env, []}
+ ]}.
