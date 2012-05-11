@@ -3,5 +3,4 @@
 pysandbox/*
 pyside/*
 external/*
-test/*
 !external/README
