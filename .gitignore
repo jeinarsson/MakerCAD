@@ -1,4 +1,6 @@
 *.pyc
 *.pyo
+pysandbox/*
+pyside/*
 external/*
 !external/README
