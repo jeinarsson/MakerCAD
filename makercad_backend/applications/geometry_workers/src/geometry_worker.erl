@@ -1,12 +1,11 @@
 -module(geometry_worker).
 -behaviour(gen_server).
--define(SERVER, ?MODULE).
 
 %% ------------------------------------------------------------------
 %% API Function Exports
 %% ------------------------------------------------------------------
 
--export([start_link/0, stop/0]).
+-export([start_link/0, stop/0, compute/2]).
 
 %% ------------------------------------------------------------------
 %% gen_server Function Exports
@@ -20,13 +19,15 @@
 %% ------------------------------------------------------------------
 
 start_link() ->
-    gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
+    gen_server:start_link(?MODULE, [], []).
 
 stop() ->
-	gen_server:call(?SERVER, stop).
+	gen_server:call(?MODULE, stop).
 
 compute(Pid, Blob) ->
-	gen_server:call(Pid, {call, {compute, Blob}}, infinity).
+	lager:info("Sending gen_server:call on: ~p",[Blob]),
+	gen_server:call(Pid, {compute, Blob}, infinity).
+
 
 %% ------------------------------------------------------------------
 %% gen_server Function Definitions
@@ -35,7 +36,7 @@ compute(Pid, Blob) ->
 -record(state, {port}).
 
 init(_Args) ->
-	Worker_executable = filename:absname(filename:join([code:priv_dir(geometry_workers)] ++ "bin/makercad_worker.exe")),
+	Worker_executable = filename:absname(filename:join([code:priv_dir(geometry_workers)] ++ ["makercad_worker.exe"])),
 	lager:info("Opening Port to ~p", [Worker_executable]),
 	process_flag(trap_exit, true),
 	Port = open_port({spawn_executable, Worker_executable},
@@ -46,6 +47,8 @@ handle_call(stop, _From, State) ->
 	{stop, normal, stopped, State};
 
 handle_call({compute, Blob}, _From, State) ->
+	lager:info("WTF",[]),
+	lager:info("Compute call on: ~p",[Blob]),
 	Port = State#state.port,
 	Port ! {self(), {command, Blob}},
 	receive
@@ -57,25 +60,29 @@ handle_call({compute, Blob}, _From, State) ->
 		{stop, {error, compute_timeout}, State}
 	end;
 
+handle_call(testcall, _From, State) ->
+	lager:info("testcall"),
+	{reply,42,State};
+
 handle_call(Request, _From, State) ->
-	lager:warning("~p unexpected call: ~p", [?SERVER, Request]),
+	lager:warning("~p unexpected call: ~p", [?MODULE, Request]),
 	{reply, unexpected_call, State}.
 
 handle_cast(Msg, State) ->
-	lager:warning("~p unexpected cast: ~p", [?SERVER, Msg]),
+	lager:warning("~p unexpected cast: ~p", [?MODULE, Msg]),
     {noreply, State}.
 
 
 handle_info({'EXIT', Port, Reason}, State) when Port =:= State#state.port ->
-	lager:info("~p port crashed => terminating worker: ~p", [?SERVER, Reason]),
+	lager:info("~p port crashed => terminating worker: ~p", [?MODULE, Reason]),
     {stop, port_crashed, State};
 
 handle_info(Info, State) ->
-	lager:warning("~p unexpected info: ~p", [?SERVER, Info]),
+	lager:warning("~p unexpected info: ~p", [?MODULE, Info]),
     {noreply, State}.
 
 terminate(Reason, State) ->
-	lager:info("terminating ~p: ~p", [?SERVER, Reason]),
+	lager:info("terminating ~p: ~p", [?MODULE, Reason]),
 	Port = State#state.port,
 	Port ! {self(), close},
 	receive

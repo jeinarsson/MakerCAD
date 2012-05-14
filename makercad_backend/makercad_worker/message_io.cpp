@@ -1,17 +1,42 @@
 #include "message_io.h"
-
 #include <iostream>
+
 void read_message(buffer& buf)
 {
 	buf.length = read_cmd(buf.bytes);
+
 }
 
-
-bool handle_message(const buffer& buf)
+bool handle_message(buffer& buf)
 {
-	buf.bytes[buf.length] = 0;
-	//write_cmd(buf.bytes, buf.length);
-	write_cmd((const byte*)"helo", 4);
+	if (buf.length <= 0) { // EOF or error
+		/*
+		if (std::cin.eof())
+			std::cout << "EOF on stdin, quitting.";
+		else
+			std::cout << "Error on stdin, quitting.";
+		*/
+		return false;
+	}
+
+	if (buf.length != 2) {
+		return false;
+	}
+
+	byte res = 0;
+	if (buf.bytes[0] == 0){
+		res = buf.bytes[1]-1;
+	}
+	else if (buf.bytes[0] == 1){
+		res = buf.bytes[1]+1;
+	}
+	else {
+		return false;
+	}
+
+	buf.length = 1;
+	buf.bytes[0] = res;
+	write_cmd(buf.bytes, buf.length);
 	return true;
 }
 
@@ -20,7 +45,12 @@ bool handle_message(const buffer& buf)
 int read_exact(byte *buf, int len) {
     int i, got=0;
     do {
-        if ((i = read(0, buf+got, len-got)) <= 0)
+		std::cin.read((char*)buf+got, len-got);
+		if (std::cin.eof()) {
+			return -1;
+		}
+		i = (int)std::cin.gcount();
+        if (i <= 0)
             return(i);
         got += i;
     } while (got<len);
@@ -33,29 +63,26 @@ int read_cmd(byte* buf) {
         return(-1);
     len = (buf[0] << 24) | (buf[1] << 16) | (buf[2] << 8) | buf[3];
 	int read_length = read_exact(buf, len);
-	if (read_length != len) {
-		printf("read only %i of %i", read_length, len);
-	}
 	return read_length;
 }
 
 int write_exact(const byte *buf, int len) {
-    int i, wrote = 0;
-    do {
-        if ((i = write(1, buf+wrote, len-wrote)) <= 0)
-            return (i);
-        wrote += i;
-    } while (wrote<len);
+
+	std::cout.write((char*)buf, len);
     return len;
 }
 
 int write_cmd(const byte *buf, int len) {
-    byte size_buf[4];
+
+	byte size_buf[4];
     size_buf[0] = (len >> 24) & 0xff;
     size_buf[1] = (len >> 16) & 0xff;
     size_buf[2] = (len >> 8) & 0xff;
     size_buf[3] = len & 0xff;
     write_exact(size_buf, 4);
-    return write_exact(buf, len);
+	int ret = write_exact(buf, len);
+	std::cout.flush();
+
+	return ret;
 }
 

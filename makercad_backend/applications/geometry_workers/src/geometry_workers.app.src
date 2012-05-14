@@ -5,8 +5,11 @@
   {registered, []},
   {applications, [
                   kernel,
-                  stdlib
+                  stdlib,
+                  lager
                  ]},
   {mod, { geometry_workers_app, []}},
-  {env, []}
+  {env, [
+  	{number_of_workers, 5}
+  ]}
  ]}.

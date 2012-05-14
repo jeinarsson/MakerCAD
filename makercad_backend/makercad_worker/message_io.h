@@ -9,7 +9,7 @@ struct buffer {
 };
 
 void read_message(buffer& buf);
-bool handle_message(const buffer& buf);
+bool handle_message(buffer& buf);
 
 
 int read_exact(byte *buf, int len);
