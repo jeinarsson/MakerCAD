@@ -142,6 +142,8 @@ end_per_group(_group, Config) ->
 %% variable, but should NOT alter/remove any existing entries.
 %%--------------------------------------------------------------------
 init_per_testcase(TestCase, Config) ->
+    ok = application:start(lager),
+    ok = application:start(geometry_workers),
     Config.
 
 %%--------------------------------------------------------------------
@@ -158,10 +160,14 @@ init_per_testcase(TestCase, Config) ->
 %% Description: Cleanup after each test case.
 %%--------------------------------------------------------------------
 end_per_testcase(TestCase, Config) ->
+    ok = application:stop(geometry_workers),
+    ok = application:stop(lager),
     Config.
 
 test_geometry_workers() ->
     [{userdata,[{doc,"Testing the geometry_workers module"}]}].
 
 test_geometry_workers(_Config) ->
-    ok = ok.
+    {ok,Testpid} = geometry_worker:start_link(),
+    Data = geometry_worker:compute(Testpid, <<1,0>>),
+    lager:debug("Got data back: ~p",Data).
