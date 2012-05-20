@@ -15,9 +15,9 @@ class TestGraph(unittest.TestCase):
         def assign_connection(one, another):
             one.connect(another)
 
-        c1 = graph.Connector(True, graph.ConnectorDatatype.Body3D)
-        c2 = graph.Connector(False, graph.ConnectorDatatype.Shape2D)
-        c3 = graph.Connector(True, graph.ConnectorDatatype.Body3D)
+        c1 = graph.Connector(True, graph.GeometryType.Body3D)
+        c2 = graph.Connector(False, graph.GeometryType.Shape2D)
+        c3 = graph.Connector(True, graph.GeometryType.Body3D)
 
         self.assertRaises(TypeError, c1.connect, "not a Connector object")
 
@@ -44,16 +44,21 @@ class TestGraph(unittest.TestCase):
         self.assertRaises(ValueError, c2.disconnect, c1)
         self.assertRaises(ValueError, c1.disconnect, c2)
 
-    def test_input(self):
+
+    def test_input(self):    
 
         def assign_input(c, value):
             c.is_input = value
 
-        c1 = graph.Connector(True, graph.ConnectorDatatype.Body3D)
-        c2 = graph.Connector(False, graph.ConnectorDatatype.Body3D)
-
+        #create one input connector
+        c1 = graph.Connector(True, graph.GeometryType.Body3D)
         self.assertTrue(c1.is_input)
+
+        #and one output connector
+        c2 = graph.Connector(False, graph.GeometryType.Body3D)
         self.assertTrue(not c2.is_input)
+
+        #Try to assign the to the is_input values of the connectors
         self.assertRaises(AttributeError, assign_input, c1, False)
         self.assertRaises(AttributeError, assign_input, c2, False)
 
