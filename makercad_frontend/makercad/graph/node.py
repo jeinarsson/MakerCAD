@@ -10,6 +10,7 @@ class Node(QtCore.QObject):
     """docstring for Node"""
 
     updated_output = QtCore.Signal(QtCore.QObject)
+    set_dirty = QtCore.Signal(QtCore.QObject)
     
     def __init__(self):
         super(Node, self).__init__()
@@ -17,6 +18,7 @@ class Node(QtCore.QObject):
         self._parameters = list()
         self._code = None
         self._output = None
+        self._revision = 0
     
     def add_connector(self, c):
         assert isinstance(c, Connector), "%s is not a Connector" % str(c)
@@ -31,6 +33,10 @@ class Node(QtCore.QObject):
     def get_connectors(self):
         return tuple(self._connectors)
     connectors = property(get_connectors)
+
+    def get_revision(self):
+        return self._revision
+    revision = property(get_revision)
 
     def add_parameter(self, p):
         assert not p in self._parameters
@@ -62,6 +68,11 @@ class Node(QtCore.QObject):
     def get_output(self):
         return self._output
     output = property(get_output)
+
+    def set_dirty(self):
+        self._revision += 1
+        self._is_dirty = True
+        self.became_dirty.emit(self)
 
     def _validate_parameters(self):
         #Check that all parameters have values of correct data type
@@ -106,6 +117,7 @@ class Node(QtCore.QObject):
         if not self._is_output_computable():
             self._output = None
             self.updated_output.emit(self)
+            self.set_dirty()
             return
 
         #make a dictionary of input placeholders for all input connectors
@@ -134,6 +146,7 @@ class Node(QtCore.QObject):
 
         self._output = output
         self.updated_output.emit(self)
+        self.set_dirty()
 
 class NodeParameter(QtCore.QObject):
     """docstring for NodeParameter"""
@@ -221,10 +234,6 @@ class Connector(QtCore.QObject):
         self._datatype = datatype
         self.changed.emit()
     datatype = property(get_datatype, set_datatype)
-
-    def get_links(self):
-        return frozenset(self._links)
-    links = property(get_links)
 
 class InputPlaceholder(object):
     """docstring for InputPlaceholder"""

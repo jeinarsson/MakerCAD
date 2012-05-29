@@ -52,16 +52,11 @@ def is_acyclic(A):
 
 class Graph(QtCore.QObject):
     """docstring for Graph"""
-    def __init__(self):
+    def __init__(self, mesh_provider):
         super(Graph, self).__init__()
         self._links = set()
-        self._nodes = dict()
-        self._node_ids = dict()
-        self._node_id_counter = 0
-
-    def _get_next_node_id(self):
-        self._node_id_counter += 1
-        return self._node_id_counter
+        self._nodes = set()
+        self._mesh_provider = mesh_provider
 
     def get_links(self):
         return frozenset(self._links)
@@ -72,12 +67,28 @@ class Graph(QtCore.QObject):
         assert isinstance(conn_2, Connector)
         assert (conn_1.is_input ^ conn_2.is_input), \
             "connection needs one output and one input"
+
+        if conn_1.is_input:
+            input_conn = conn_1
+            output_conn = conn_2
+        else:
+            input_conn = conn_2
+            output_conn = conn_1
+
+        output_conn.became_dirty.connect(input_conn.set_dirty)
+
         link = frozenset((conn_1, conn_2))
         assert not link in self._links
-        self._links.add(link)    
+        self._links.add(link)
+
+        self._mesh_provider.register_link(link)
+
     def remove_link(self, conn_1, conn_2):
         link = frozenset((conn_1, conn_2))
         assert link in self._links
+
+        self._mesh_provider.unregister_link(link)
+        
         self._links.remove(link)
 
     def get_nodes(self):
@@ -85,19 +96,11 @@ class Graph(QtCore.QObject):
     nodes = property(get_nodes)
 
     def add_node(self, node):
-        assert isinstance(node, Node)
         assert not node in self._nodes
-        node_id = self._get_next_node_id()
-        self._node_ids[node] = node_id
-        self._nodes[node_id] = node
+        self._nodes.add(node)        
+        self._mesh_provider.register_node(node)
 
     def remove_node(self, node):
-        assert node in self._nodes
-        node_id = self._node_ids[node]
-        del self._node_ids[node]
-        del self._nodes[node_id]
-
-    def get_node(self, node_id):
-        return self._nodes[node_id]
-      
-       
+        self._mesh_provider.unregister_node(node)
+        self._nodes.remove(node)
+        
