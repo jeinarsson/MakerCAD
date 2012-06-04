@@ -1,7 +1,8 @@
 import unittest
 from graph import Graph
 from node import Node, Connector
-from geometry import GeometryType
+from makercad.geometry import GeometryType
+from mesh import MeshProvider
 
 class TestGraph(unittest.TestCase):
 
@@ -24,7 +25,7 @@ class TestGraph(unittest.TestCase):
         n2 = Node()
         n2.add_connector(c21)
 
-        G = Graph()
+        G = Graph(MeshProvider())
         G.add_node(n1)
         G.add_node(n2)
 

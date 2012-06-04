@@ -2,7 +2,7 @@ from PySide import QtCore
 import collections
 import types
 from makercad.utils.enum import enum
-from makercad.graph.geometry import Geometry, GeometryType
+from makercad.geometry import Geometry, GeometryType
 
 ParameterType = enum(Integer=0, Float=1)
 
@@ -10,7 +10,7 @@ class Node(QtCore.QObject):
     """docstring for Node"""
 
     updated_output = QtCore.Signal(QtCore.QObject)
-    set_dirty = QtCore.Signal(QtCore.QObject)
+    became_dirty = QtCore.Signal(QtCore.QObject)
     
     def __init__(self):
         super(Node, self).__init__()
@@ -23,6 +23,7 @@ class Node(QtCore.QObject):
     def add_connector(self, c):
         assert isinstance(c, Connector), "%s is not a Connector" % str(c)
         assert not c in self._connectors
+        c.node = self
         self._connectors.append(c)
         self._update_output()
         c.changed.connect(self._update_output)
@@ -30,6 +31,7 @@ class Node(QtCore.QObject):
         self._connectors.remove(c)
         self._update_output()
         c.changed.disconnect(self._update_output)
+        c.node = None
     def get_connectors(self):
         return tuple(self._connectors)
     connectors = property(get_connectors)
@@ -211,6 +213,13 @@ class Connector(QtCore.QObject):
         self._datatype = None
         self.set_datatype(datatype)
         self._name = None
+        self._node = None
+
+    def get_node(self):
+        return self._node
+    def set_node(self, node):
+        self._node = node
+    node = property(get_node, set_node)
 
     def get_is_input(self):
         return self._is_input

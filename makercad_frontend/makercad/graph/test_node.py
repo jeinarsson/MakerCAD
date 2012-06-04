@@ -1,6 +1,6 @@
 import unittest
 from node import Node, NodeParameter, ParameterType, Connector
-from geometry import Geometry, GeometryType
+from makercad.geometry import Geometry, GeometryType
 
 class TestNodeOutput(unittest.TestCase):
     # Set up a well-working Node object with parameters and connectors.

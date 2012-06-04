@@ -69,26 +69,30 @@ class Graph(QtCore.QObject):
             "connection needs one output and one input"
 
         if conn_1.is_input:
-            input_conn = conn_1
-            output_conn = conn_2
+            input_node, output_node = conn_1.node, conn_2.node
         else:
-            input_conn = conn_2
-            output_conn = conn_1
+            input_node, output_node = conn_2.node, conn_1.node
 
-        output_conn.became_dirty.connect(input_conn.set_dirty)
+        output_node.became_dirty.connect(input_node.set_dirty)
 
         link = frozenset((conn_1, conn_2))
         assert not link in self._links
         self._links.add(link)
 
-        self._mesh_provider.register_link(link)
+        self._mesh_provider.register_link(conn_1, conn_2)
 
     def remove_link(self, conn_1, conn_2):
         link = frozenset((conn_1, conn_2))
         assert link in self._links
 
-        self._mesh_provider.unregister_link(link)
-        
+        if conn_1.is_input:
+            input_node, output_node = conn_1.node, conn_2.node
+        else:
+            input_node, output_node = conn_2.node, conn_1.node
+
+        output_node.became_dirty.disconnect(input_node.set_dirty)
+        self._mesh_provider.unregister_link(conn_1, conn_2)
+
         self._links.remove(link)
 
     def get_nodes(self):
