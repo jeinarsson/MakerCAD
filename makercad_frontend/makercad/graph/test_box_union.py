@@ -1,6 +1,8 @@
 import unittest
+from graph import Graph
+from mesh import MeshProvider
 from node import Node, NodeParameter, ParameterType, Connector
-from makercad.geometry.geometry import Geometry, GeometryType, Box
+from makercad.geometry.geometry import Geometry, GeometryType, Box, Union
 
 class TestNodeOutput(unittest.TestCase):
     # Set up a well-working Node object with parameters and connectors.
@@ -12,39 +14,40 @@ class TestNodeOutput(unittest.TestCase):
     def setUp(self):
         n = Node()
 
-        #input connector
-        c1 = Connector(True, GeometryType.Body3D)
-        c1.name = "input connector name"
+        #output connector
+        c1 = Connector(False, GeometryType.Body3D)
+        c1.name = "union of two boxes"
         n.add_connector(c1)
 
-        #output connector
-        c2 = Connector(False, GeometryType.Shape2D)
-        c2.name = "output connector name"
+        c2 = Connector(False, GeometryType.Body3D)
+        c2.name = "union of box and union"
         n.add_connector(c2)
 
-        #two parameters
+        #one parameter
         p1 = NodeParameter()
-        p1.name = "integer parameter name"
-        p1.datatype = ParameterType.Integer
-        p1.value = 3
-
-        p2 = NodeParameter()
-        p2.name = "float parameter name"
-        p2.datatype = ParameterType.Float
-        p2.value = 3.14159
+        p1.name = "length"
+        p1.datatype = ParameterType.Float
+        p1.value = 3.14159
 
         n.add_parameter(p1)
-        n.add_parameter(p2)
 
         def func(inputs, parameters):
+            l = parameters["length"]
+            b1 = Box(l, l, l)
+            b2 = Box(2.*l, 2.*l, 2.*l)
+            u1 = Union(b1, b2)
+            u2 = Union(u1, b1)
+
             d = dict()
-            g = Geometry()
-            g._datatype = GeometryType.Shape2D
-            d["output connector name"] = g
+            d["union of two boxes"] = u1
+            d["union of box and union"] = u2
             return d
 
         n.code = func
         self.n = n
+
+        self.G = Graph(MeshProvider())
+        self.G.add_node(n)
 
     def tearDown(self):
         pass
@@ -58,19 +61,9 @@ class TestNodeOutput(unittest.TestCase):
         n = self.n
         self.assertTrue(None != n.output)
 
-        n.parameters[0].datatype = ParameterType.Float
         n.parameters[0].value = 1
-        self.assertTrue(None == n.output)
-
+        n.parameters[0].value = "a"
         n.parameters[0].value = 1.
-        self.assertTrue(None != n.output)
-
-        # But if we remove the parameter from the node,
-        # the node should not care whether the parameter changes value
-        p = n.parameters[0]
-        n.remove_parameter(p)
-        p.value = 1
-        self.assertTrue(None != n.output)
 
 
 

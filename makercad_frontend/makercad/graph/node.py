@@ -2,15 +2,14 @@ from PySide import QtCore
 import collections
 import types
 from makercad.utils.enum import enum
-from makercad.geometry import Geometry, GeometryType
+from makercad.geometry.geometry import Geometry, GeometryType
 
 ParameterType = enum(Integer=0, Float=1)
 
 class Node(QtCore.QObject):
     """docstring for Node"""
 
-    updated_output = QtCore.Signal(QtCore.QObject)
-    became_dirty = QtCore.Signal(QtCore.QObject)
+    became_dirty = QtCore.Signal(QtCore.QObject, bool)
     
     def __init__(self):
         super(Node, self).__init__()
@@ -71,10 +70,15 @@ class Node(QtCore.QObject):
         return self._output
     output = property(get_output)
 
-    def set_dirty(self):
+    def _set_dirty(self, new_output):
         self._revision += 1
         self._is_dirty = True
-        self.became_dirty.emit(self)
+        self.became_dirty.emit(self, new_output)
+
+    def handle_dirty_input(self):
+        # This node becomes dirty because one of its
+        # input nodes became dirty.
+        self._set_dirty(False) # Flag updated = False
 
     def _validate_parameters(self):
         #Check that all parameters have values of correct data type
@@ -118,8 +122,7 @@ class Node(QtCore.QObject):
     def _update_output(self):
         if not self._is_output_computable():
             self._output = None
-            self.updated_output.emit(self)
-            self.set_dirty()
+            self._set_dirty(True) # Flag updated = True
             return
 
         #make a dictionary of input placeholders for all input connectors
@@ -147,8 +150,7 @@ class Node(QtCore.QObject):
             assert c.datatype == output[c.name].datatype
 
         self._output = output
-        self.updated_output.emit(self)
-        self.set_dirty()
+        self._set_dirty(True) # Flag updated = True
 
 class NodeParameter(QtCore.QObject):
     """docstring for NodeParameter"""
@@ -214,6 +216,7 @@ class Connector(QtCore.QObject):
         self.set_datatype(datatype)
         self._name = None
         self._node = None
+        self._mesh = None
 
     def get_node(self):
         return self._node
@@ -233,6 +236,13 @@ class Connector(QtCore.QObject):
         self._name = name
         self.changed.emit()
     name = property(get_name, set_name)
+
+    def get_mesh(self):
+        return self._mesh
+    def set_mesh(self, mesh):
+        self._mesh = mesh
+        print "I am {0} now have mesh {1}".format(self, mesh)
+    mesh = property(get_mesh, set_mesh)
 
     def get_datatype(self): 
         return self._datatype

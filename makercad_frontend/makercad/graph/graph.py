@@ -1,6 +1,6 @@
 from PySide import QtCore
 import collections
-from node import Node, Connector
+from makercad.graph.node import Node, Connector
 
 def is_acyclic(A):
     """
@@ -73,7 +73,7 @@ class Graph(QtCore.QObject):
         else:
             input_node, output_node = conn_2.node, conn_1.node
 
-        output_node.became_dirty.connect(input_node.set_dirty)
+        output_node.became_dirty.connect(input_node.handle_dirty_input)
 
         link = frozenset((conn_1, conn_2))
         assert not link in self._links
@@ -90,7 +90,7 @@ class Graph(QtCore.QObject):
         else:
             input_node, output_node = conn_2.node, conn_1.node
 
-        output_node.became_dirty.disconnect(input_node.set_dirty)
+        output_node.became_dirty.disconnect(input_node.handle_dirty_input)
         self._mesh_provider.unregister_link(conn_1, conn_2)
 
         self._links.remove(link)

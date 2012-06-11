@@ -1,7 +1,7 @@
 import unittest
-from graph import Graph
-from node import Node, Connector
-from makercad.geometry import GeometryType
+from makercad.graph.graph import Graph
+from makercad.graph.node import Node, Connector
+from makercad.geometry.geometry import GeometryType
 from mesh import MeshProvider
 
 class TestGraph(unittest.TestCase):
@@ -70,6 +70,8 @@ class TestGraph(unittest.TestCase):
         #Try to assign the to the is_input values of the connectors
         self.assertRaises(AttributeError, assign_input, c1, False)
         self.assertRaises(AttributeError, assign_input, c2, False)
+
+        
 
 
 
